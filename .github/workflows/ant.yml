@@ -1,0 +1,34 @@
+name: Criar e Deploy
+
+on:
+  push:
+    branches:
+      - main  # Ajuste para o nome da branch que você usa para commits principais
+  pull_request:
+    branches:
+      - main  # Ajuste para o nome da branch que você usa para PRs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'  # Ajuste para a versão do JDK que você está usando
+
+    - name: Install Apache Ant
+      run: sudo apt-get install -y ant
+
+    - name: Build with Ant
+      run: ant build
+
+    - name: Upload JAR as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: calculadora-fat
+        path: dist/calculadora-fat.jar
