@@ -74,6 +74,29 @@ public class Main extends javax.swing.JFrame {
         return valores.pop();
     }
     
+    private static double aplicarOperador(double a, double b, char operador){
+        switch (operador){
+            case '+' : return a + b;
+            case '-' : return a - b;
+            case '*' : return a * b;
+            case '/' : return a / b;
+            default : throw new IllegalArgumentException("Operador Inválido: " + operador);
+        }
+    }
+    
+    private static boolean isOperator(char c){
+        return c == '+' || c == '-' || c == '*' || c == '/';
+    }
+    
+    private static boolean isNumero(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
