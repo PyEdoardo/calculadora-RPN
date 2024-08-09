@@ -94,9 +94,9 @@ public class Main extends javax.swing.JFrame {
     
     // Método para determinar a precedência do operador
     private int prioridade(char operador) {
-    if (operador == '+' || operador == '-') return 1;
-    if (operador == '*' || operador == '/') return 2;
-    return -1;
+        if (operador == '+' || operador == '-') return 1;
+        if (operador == '*' || operador == '/') return 2;
+        return -1;
 }
     
     
