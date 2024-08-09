@@ -26,6 +26,54 @@ public class Main extends javax.swing.JFrame {
         return avaliarRPN(tokens);
     }
     
+    public static List<String> converterParaRPN(String expressao){
+        List<String> resultado = new ArrayList<>();
+        Stack<Character> operadores = new Stack<>();
+        
+        StringBuilder numero = new StringBuilder();
+        for (char c : expressao.toCharArray()){
+            if (Character.isDigit(c) || c == '.' ){
+                numero.append(c);
+            }
+            else {
+                if (numero.length() > 0 ){
+                    resultado.add(numero.toString());
+                    numero.setLength(0);
+                }
+                if (c == '('){
+                    operadores.push(c);
+                }
+                else if (c == ')'){
+                    while (!operadores.isEmpty() && precedencia(c) <= precedencia(operadores.peek()) ){
+                        resultado.add(String.valueOf(operadores.pop()));
+                    }
+                    operadores.push(c);
+                }
+            }
+        }
+        if (numero.length() > 0){
+            resultado.add(numero.toString());
+        }
+        while (!operadores.isEmpty()){
+            resultado.add(String.valueOf(operadores.pop()));
+        }
+        return resultado;
+    }
+    public static double avaliarRPN(List<String> tokens){
+        Stack<Double> valores = new Stack<>();
+        for (String token : tokens){
+            if (isNumero(token)){
+                valores.push(Double.valueOf(token));
+            }else if (isOperator(token.charAt(0))){
+                double b = valores.pop();
+                double a = valores.pop();
+                double resultado = aplicarOperador(a, b, token.charAt(0));
+                valores.push(resultado);
+            }
+        }
+        return valores.pop();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
