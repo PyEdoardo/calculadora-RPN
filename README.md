@@ -7,6 +7,11 @@ Calculadora em java, criada com o netbeans, usando notação polonesa reversa pa
 Invés de fazer uso do cálculo fixo, onde temos os operadores no meio dos operandos, organizamos antes os números, e depois os operadores,
 assim facilitando o cálculo e código, e evitar erros.
 
+Funcionamento:
+
+![image](https://github.com/user-attachments/assets/1fc35063-b79e-4ca4-8d36-8ca5292a5fa7)
+
+
 # Como compilar?
 
 Não é necessário! a cada update irei soltar um release da versão mais atual, já com as dependências;
