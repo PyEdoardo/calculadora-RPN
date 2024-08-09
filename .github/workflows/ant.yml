@@ -19,7 +19,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '11'  # Ajuste para a versão do JDK que você está usando
+        java-version: '20'  # Ajuste para a versão do JDK que você está usando
 
     - name: Install Apache Ant
       run: sudo apt-get install -y ant
