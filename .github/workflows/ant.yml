@@ -1,34 +1,35 @@
-name: Criar e Deploy
+name: Buildar e Deploy
 
 on:
   push:
     branches:
-      - main  # Ajuste para o nome da branch que você usa para commits principais
+      - main
   pull_request:
     branches:
-      - main  # Ajuste para o nome da branch que você usa para PRs
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'  # Ajuste para a versão do JDK que você está usando
+      - name: Configura o java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '20'  # Altere para a versão do Java que você está usando
+          distribution: 'temurin'
 
-    - name: Install Apache Ant
-      run: sudo apt-get install -y ant
+      - name: Instalar o Java
+        run: sudo apt-get install -y ant
 
-    - name: Build with Ant
-      run: ant build
+      - name: Rodar o Ant
+        run: ant dist
 
-    - name: Upload JAR as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: calculadora-fat
-        path: dist/calculadora-fat.jar
+      - name: Upa o jar como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: calculadora-fat
+          path: dist/calculadora-fat.jar
