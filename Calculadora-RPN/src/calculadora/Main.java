@@ -19,7 +19,7 @@ import java.util.HashSet;
  * @author edoar
  */
 public class Main extends javax.swing.JFrame {
-    int temaMenu;
+    boolean opFeita = false; //variável que guarda se já foi feita uma operaçao, para que ao apertar em outro número após calcular, ele irá apagar
     /**
      * Creates new form Main
      */
@@ -30,70 +30,52 @@ public class Main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
     }
-    
-    public static double calcular(String expressao){
-        List<String> tokens = converterParaRPN(expressao);
-        return avaliarRPN(tokens);
-    }
-    
-    public static List<String> converterParaRPN(String expressao){
-        List<String> resultado = new ArrayList<>();
-        Stack<Character> operadores = new Stack<>();
         
-        StringBuilder numero = new StringBuilder();
-        for (char c : expressao.toCharArray()){
-            if (Character.isDigit(c) || c == '.' ){
-                numero.append(c);
-            }
-            else {
-                if (numero.length() > 0 ){
-                    resultado.add(numero.toString());
-                    numero.setLength(0);
-                }
-                if (c == '('){
-                    operadores.push(c);
-                }
-                else if (c == ')'){
-                    while (!operadores.isEmpty() && precedencia(c) <= precedencia(operadores.peek()) ){
-                        resultado.add(String.valueOf(operadores.pop()));
-                    }
-                    operadores.push(c);
-                }
-            }
+    private void calcularResultado() {
+        try {
+            String expressão = campoExpressao.getText();
+            double resultado = avaliarExpressao(expressão);
+            campoExpressao.setText(String.valueOf(resultado));
+            opFeita = true;
+        } catch (Exception e) {
+            campoExpressao.setText("Erro");
         }
-        if (numero.length() > 0){
-            resultado.add(numero.toString());
-        }
-        while (!operadores.isEmpty()){
-            resultado.add(String.valueOf(operadores.pop()));
-        }
-        return resultado;
     }
     // Método para avaliar uma expressão em RPN
-    public static double avaliarRPN(List<String> tokens){
+    private double avaliarExpressao(String expressão) {
         Stack<Double> valores = new Stack<>();
-        for (String token : tokens){
-            if (isNumero(token)){
-                valores.push(Double.valueOf(token));
-            }else if (isOperator(token.charAt(0))){
-                double b = valores.pop();
-                double a = valores.pop();
-                double resultado = aplicarOperador(a, b, token.charAt(0));
-                valores.push(resultado);
+        Stack<Character> operadores = new Stack<>();
+        for (int i = 0; i < expressão.length(); i++) {
+            char c = expressão.charAt(i);
+            if (Character.isDigit(c)) {
+                StringBuilder sb = new StringBuilder();
+                while (i < expressão.length() && Character.isDigit(expressão.charAt(i))) {
+                    sb.append(expressão.charAt(i++));
+                }
+                i--;
+                valores.push(Double.parseDouble(sb.toString()));
+            } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                while (!operadores.isEmpty() && prioridade(c) <= prioridade(operadores.peek())) {
+                    valores.push(aplicarOperador(operadores.pop(), valores.pop(), valores.pop()));
+                }
+                operadores.push(c);
             }
         }
-        return valores.pop();
-    }
-     // Método para aplicar um operador em dois valores
-    private static double aplicarOperador(double a, double b, char operador){
-        switch (operador){
-            case '+' : return a + b;
-            case '-' : return a - b;
-            case '*' : return a * b;
-            case '/' : return a / b;
-            default : throw new IllegalArgumentException("Operador Inválido: " + operador);
+        while (!operadores.isEmpty()) {
+            valores.push(aplicarOperador(operadores.pop(), valores.pop(), valores.pop()));
         }
+        return valores.pop();
+    }   
+     // Método para aplicar um operador em dois valores
+    private double aplicarOperador(char operador, double b, double a) {
+    switch (operador) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return a / b;
+        default: throw new IllegalArgumentException("Operador inválido: " + operador);
     }
+}
     
     // Método para verificar se o caractere é um operador
     private static boolean isOperator(char c){
@@ -111,15 +93,11 @@ public class Main extends javax.swing.JFrame {
     }
     
     // Método para determinar a precedência do operador
-    private static int precedencia(char operador) {
-        switch (operador) {
-            case '+':
-            case '-': return 1;
-            case '*':
-            case '/': return 2;
-            default: return -1;
-        }
-    }
+    private int prioridade(char operador) {
+    if (operador == '+' || operador == '-') return 1;
+    if (operador == '*' || operador == '/') return 2;
+    return -1;
+}
     
     
     
@@ -208,8 +186,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         botao4.setText("4");
+        botao4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao4ActionPerformed(evt);
+            }
+        });
 
         botao5.setText("5");
+        botao5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao5ActionPerformed(evt);
+            }
+        });
 
         botao6.setText("6");
         botao6.addActionListener(new java.awt.event.ActionListener() {
@@ -219,10 +207,25 @@ public class Main extends javax.swing.JFrame {
         });
 
         botao7.setText("7");
+        botao7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao7ActionPerformed(evt);
+            }
+        });
 
         botao9.setText("9");
+        botao9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao9ActionPerformed(evt);
+            }
+        });
 
         botao8.setText("8");
+        botao8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao8ActionPerformed(evt);
+            }
+        });
 
         botao1.setText("1");
         botao1.addActionListener(new java.awt.event.ActionListener() {
@@ -260,14 +263,39 @@ public class Main extends javax.swing.JFrame {
         });
 
         botaoCalcular.setText("Calcular");
+        botaoCalcular.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCalcularActionPerformed(evt);
+            }
+        });
 
         botaoMultiplicar.setText("*");
+        botaoMultiplicar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoMultiplicarActionPerformed(evt);
+            }
+        });
 
         botaoDivisao.setText("/");
+        botaoDivisao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoDivisaoActionPerformed(evt);
+            }
+        });
 
         botaoMais.setText("+");
+        botaoMais.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoMaisActionPerformed(evt);
+            }
+        });
 
         botaoMenos.setText("-");
+        botaoMenos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoMenosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -348,6 +376,11 @@ public class Main extends javax.swing.JFrame {
         );
 
         botao0.setText("0");
+        botao0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botao0ActionPerformed(evt);
+            }
+        });
 
         jMenu5.setText("File");
         jMenuBar2.add(jMenu5);
@@ -429,17 +462,32 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_opcaoMenuBrancoActionPerformed
 
     private void botao6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao6ActionPerformed
-        // TODO add your handling code here:
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("6");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "6"); 
+        }
     }//GEN-LAST:event_botao6ActionPerformed
 
     private void botao3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao3ActionPerformed
         String expressaoAnterior = campoExpressao.getText();
-        campoExpressao.setText(expressaoAnterior + "3");
+        if (opFeita == true){
+            campoExpressao.setText("3");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "3"); 
+        }
     }//GEN-LAST:event_botao3ActionPerformed
 
     private void botaoElevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoElevarActionPerformed
         double elevar = Double.parseDouble(campoExpressao.getText());
-        elevar ++;
+        elevar = elevar + elevar;
         campoExpressao.setText(String.valueOf(elevar));
     }//GEN-LAST:event_botaoElevarActionPerformed
 
@@ -449,13 +497,114 @@ public class Main extends javax.swing.JFrame {
 
     private void botao1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao1ActionPerformed
         String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("1");
+            opFeita = false;
+        }
+        else{
         campoExpressao.setText(expressaoAnterior + "1");
     }//GEN-LAST:event_botao1ActionPerformed
-
+    }
     private void botao2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao2ActionPerformed
         String expressaoAnterior = campoExpressao.getText();
-        campoExpressao.setText(expressaoAnterior + "2");
+        if (opFeita == true){
+            campoExpressao.setText("2");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "2"); 
+        }
     }//GEN-LAST:event_botao2ActionPerformed
+
+    private void botao4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao4ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("4");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "4"); 
+        }
+    }//GEN-LAST:event_botao4ActionPerformed
+
+    private void botao5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao5ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("5");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "5"); 
+        }
+    }//GEN-LAST:event_botao5ActionPerformed
+
+    private void botao7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao7ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("7");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "7"); 
+        }
+    }//GEN-LAST:event_botao7ActionPerformed
+
+    private void botao8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao8ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("8");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "8"); 
+        }
+    }//GEN-LAST:event_botao8ActionPerformed
+
+    private void botao9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao9ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        if (opFeita == true){
+            campoExpressao.setText("9");
+            opFeita = false;
+
+        }
+        else{
+           campoExpressao.setText(expressaoAnterior + "9"); 
+        }
+    }//GEN-LAST:event_botao9ActionPerformed
+
+    private void botao0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao0ActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        campoExpressao.setText(expressaoAnterior + "0");
+    }//GEN-LAST:event_botao0ActionPerformed
+
+    private void botaoMaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        campoExpressao.setText(expressaoAnterior + "+");
+    }//GEN-LAST:event_botaoMaisActionPerformed
+
+    private void botaoMenosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMenosActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        campoExpressao.setText(expressaoAnterior + "-");
+    }//GEN-LAST:event_botaoMenosActionPerformed
+
+    private void botaoMultiplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMultiplicarActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        campoExpressao.setText(expressaoAnterior + "*");
+    }//GEN-LAST:event_botaoMultiplicarActionPerformed
+
+    private void botaoDivisaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDivisaoActionPerformed
+        String expressaoAnterior = campoExpressao.getText();
+        campoExpressao.setText(expressaoAnterior + "/");
+    }//GEN-LAST:event_botaoDivisaoActionPerformed
+
+    private void botaoCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCalcularActionPerformed
+        calcularResultado();
+    }//GEN-LAST:event_botaoCalcularActionPerformed
 
     /**
      * @param args the command line arguments
