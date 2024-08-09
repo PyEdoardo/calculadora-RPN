@@ -26,3 +26,8 @@ Procure o workflow mais atual, e com o símbolo azul, os vermelhos são erros na
 
 Entre no workflow mais atual, e baixe o **calculadora-fat.jar** que é o .jar com as dependências de tema
 ![image](https://github.com/user-attachments/assets/7062a473-6910-4e9d-bff9-f7b029ce509f)
+
+Caso não abra com o clique duplo, provavelmente você tem uma versão desatualizada do java, para se certificar faça isso
+![image](https://github.com/user-attachments/assets/abc9a895-2205-48d1-b779-10e0cf0cfb14)
+
+Caso seja muito abaixo da minha, atualize! (De preferência o java do temurin)
