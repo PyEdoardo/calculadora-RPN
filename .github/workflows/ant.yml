@@ -19,7 +19,7 @@ jobs:
       - name: Configura o java
         uses: actions/setup-java@v3
         with:
-          java-version: '20'  # Altere para a versão do Java que você está usando
+          java-version: '17'  # Altere para a versão do Java que você está usando
           distribution: 'temurin'
 
       - name: Instalar o Java
